@@ -29,7 +29,32 @@ app.get('/usuarios', async (req, res) => {
         // Save data in array
         usersArray.push({ id, name, last, gender, date });
 
-        
+        // 4.1. Lodash para dividir el arreglo en 2 separando los usuarios por sexo
+        const genderUsers = _.partition(usersArray, (user) => {
+            return user.gender === "male";
+        });
+
+        // 4.2. lista con los datos de todos los usuarios registrados
+        const userList = (users, title) => `
+            <h5>${title}</h5>
+            <ol>
+                ${users.map(user => `
+                    <li>
+                        Nombre: ${user.name} - Apellido: ${user.last} - ID: ${user.id} - Timestamp: ${user.date}
+                    </li>
+                `).join('')}
+            </ol>
+        `;
+
+        const template = `
+            ${userList(genderUsers[0], 'Hombres')}
+            ${userList(genderUsers[1], 'Mujeres')}
+        `;
+
+        // 5. Imprimir por la consola la lista de usuarios con fondo blanco y color de texto azul usando Chalk
+        console.log(chalk.blue.bgWhite(`Nombre: ${name} - Apellido: ${last} - ID: ${id} - Timestamp: ${date}}`));
+
+        res.send(template)
         
     } catch (error) {
         console.log('Something is wrong ' + error);
